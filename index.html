@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Huixuan Li, PhD — geospatial data scientist working on remote sensing, GeoAI and spatial epidemiology of climate-sensitive disease.">
+<meta name="author" content="Huixuan Li">
+<meta property="og:title" content="Huixuan Li, PhD">
+<meta property="og:description" content="Remote sensing, GeoAI and spatial epidemiology of climate-sensitive disease.">
+<meta property="og:image" content="media/aedes-harris.jpg">
+<title>Huixuan Li, PhD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a cartographer's sheet — left margin carries coordinates and labels, content sits on a faint graticule. */
+:root{
+  --paper:#f2f5f4; --sheet:#ffffff; --ink:#122830; --muted:#53676d; --rule:#d3dddb;
+  --water:#1f5f8b; --heat:#e3a12f; --heat-ink:#8a5a07; --grid:rgba(31,95,139,.07);
+  --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
+  --body:"IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0d1a1f; --sheet:#132329; --ink:#e3ecea; --muted:#9db0b3; --rule:#27393f;
+  --water:#7cb7de; --heat:#f0b54a; --heat-ink:#f0b54a; --grid:rgba(124,183,222,.06); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0d1a1f; --sheet:#132329; --ink:#e3ecea; --muted:#9db0b3; --rule:#27393f;
+  --water:#7cb7de; --heat:#f0b54a; --heat-ink:#f0b54a; --grid:rgba(124,183,222,.06); color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{background:var(--paper); color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.6;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:64px 64px;
+  padding-left:max(16px, env(safe-area-inset-left,0px)); padding-right:max(16px, env(safe-area-inset-right,0px))}
+a{color:var(--water); text-underline-offset:3px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--heat); outline-offset:3px; border-radius:2px}
+.wrap{max-width:1120px; margin:0 auto}
+h1,h2,h3{font-family:var(--display); text-wrap:balance; line-height:1.1; margin:0}
+p{margin:0}
+.mono{font-family:var(--mono); font-size:.78rem; letter-spacing:.04em; color:var(--muted)}
+.eyebrow{font-family:var(--mono); font-size:.74rem; letter-spacing:.14em; text-transform:uppercase; color:var(--water)}
+
+/* nav */
+nav.top{position:sticky; top:env(safe-area-inset-top,0px); z-index:20; background:color-mix(in srgb,var(--paper) 88%,transparent);
+  backdrop-filter:blur(8px); border-bottom:1px solid var(--rule); margin:0 calc(-1 * max(16px, env(safe-area-inset-left,0px))) 0;
+  padding:0 max(16px, env(safe-area-inset-right,0px)) 0 max(16px, env(safe-area-inset-left,0px))}
+body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top,0px); z-index:30; background:var(--paper)}
+nav.top .wrap{display:flex; gap:20px; align-items:center; justify-content:space-between; padding-block:12px; flex-wrap:wrap}
+nav.top .mark{font-family:var(--display); font-weight:700; font-size:1.05rem; color:var(--ink); text-decoration:none}
+nav.top ul{display:flex; gap:18px; list-style:none; margin:0; padding:0; flex-wrap:wrap}
+nav.top ul a{color:var(--muted); text-decoration:none; font-size:.9rem}
+nav.top ul a:hover{color:var(--ink)}
+
+/* hero */
+.hero{display:grid; grid-template-columns:1.05fr 1fr; gap:48px; align-items:center; padding-block:64px 56px}
+.hero > *{min-width:0}
+.hero h1{font-size:clamp(2.6rem,6vw,4.6rem); font-weight:800; letter-spacing:-.02em}
+.hero h1 span{display:block; font-size:.42em; font-weight:500; letter-spacing:0; color:var(--muted); margin-top:10px}
+.hero .lede{font-size:1.14rem; max-width:34em; margin-top:22px}
+.hero .meta{display:flex; flex-wrap:wrap; gap:8px 22px; margin-top:22px}
+.hero .meta div{font-size:.92rem}
+.hero .meta b{display:block; font-family:var(--mono); font-weight:500; font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+.cta{display:flex; gap:12px; flex-wrap:wrap; margin-top:28px}
+.btn{display:inline-flex; align-items:center; gap:8px; padding:10px 16px; border-radius:4px; font-weight:600; font-size:.92rem; text-decoration:none; border:1px solid var(--ink); color:var(--ink); background:transparent; cursor:pointer; font-family:var(--body)}
+.btn.primary{background:var(--ink); color:var(--paper)}
+.btn:hover{transform:translateY(-1px)}
+figure{margin:0}
+.frame{position:relative; background:var(--sheet); border:1px solid var(--rule); padding:10px}
+.frame video,.frame img{display:block; width:100%; height:auto; max-width:100%}
+.frame .tick{position:absolute; font-family:var(--mono); font-size:.66rem; color:var(--muted); background:var(--paper); padding:0 4px}
+.frame .tick.tl{top:-9px; left:12px} .frame .tick.br{bottom:-9px; right:12px}
+figcaption{font-size:.84rem; color:var(--muted); margin-top:10px; line-height:1.45}
+figcaption .c{font-family:var(--mono); font-size:.7rem; white-space:nowrap}
+
+/* stat strip */
+.strip{display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--ink); border-bottom:1px solid var(--rule)}
+.strip div{padding:18px 16px 18px 0}
+.strip div + div{padding-left:16px; border-left:1px solid var(--rule)}
+.strip strong{font-family:var(--display); font-size:1.9rem; font-weight:700; display:block; line-height:1; font-variant-numeric:tabular-nums}
+.strip span{font-size:.86rem; color:var(--muted)}
+
+section{padding-block:72px 8px}
+.sechead{display:grid; grid-template-columns:200px 1fr; gap:32px; margin-bottom:36px; align-items:end}
+.sechead h2{font-size:clamp(1.8rem,3.4vw,2.5rem); font-weight:700}
+.sechead p{color:var(--muted); max-width:44em; margin-top:10px}
+
+/* research themes */
+.theme{display:grid; grid-template-columns:200px 1fr; gap:32px; padding-block:36px; border-top:1px solid var(--rule)}
+.theme aside{display:flex; flex-direction:column; gap:6px}
+.theme aside .loc{font-family:var(--mono); font-size:.72rem; color:var(--muted)}
+.theme-body{display:grid; grid-template-columns:1fr 1fr; gap:32px; min-width:0}
+.theme-body > *{min-width:0}
+.theme h3{font-size:1.5rem; font-weight:700; margin-bottom:12px}
+.theme p + p{margin-top:12px}
+.theme ul.k{list-style:none; padding:0; margin:16px 0 0; display:flex; flex-wrap:wrap; gap:6px}
+.theme ul.k li{font-family:var(--mono); font-size:.72rem; padding:3px 8px; border:1px solid var(--rule); border-radius:3px; color:var(--muted); background:var(--sheet)}
+.pubref{margin-top:16px; font-size:.86rem; padding-left:12px; border-left:2px solid var(--heat)}
+.pubref + .pubref{margin-top:10px}
+.figs{display:grid; gap:16px; align-content:start}
+.theme-body.wide{grid-template-columns:1fr; gap:24px}
+.theme-body.wide > div:first-child{max-width:48em}
+.theme-body.wide .figs.two{gap:24px}
+.figs.two{grid-template-columns:1fr 1fr}
+.figs.three{grid-template-columns:repeat(3,1fr)}
+.zoom{cursor:zoom-in}
+
+/* atlas */
+.atlas{display:grid; grid-template-columns:repeat(3,1fr); gap:24px}
+.atlas figure{min-width:0}
+.frame video.sq{aspect-ratio:4/3; object-fit:contain; background:#fff}
+
+/* funding table */
+.tbl{overflow-x:auto; border-top:1px solid var(--ink)}
+table{width:100%; border-collapse:collapse; font-size:.92rem; min-width:720px}
+td,th{text-align:left; padding:14px 12px 14px 0; border-bottom:1px solid var(--rule); vertical-align:top}
+th{font-family:var(--mono); font-weight:500; font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+td.role{white-space:nowrap; font-weight:600}
+td.amt,th.amt{text-align:right; padding-right:0; white-space:nowrap; font-variant-numeric:tabular-nums}
+td.amt{font-family:var(--mono); font-size:.86rem}
+td.amt .req{color:var(--muted); font-size:.78rem}
+td.yr{font-family:var(--mono); font-size:.8rem; white-space:nowrap; font-variant-numeric:tabular-nums; color:var(--muted)}
+
+/* pubs */
+.pubs{counter-reset:p; list-style:none; padding:0; margin:0; display:grid; gap:0}
+.pubs li{display:grid; grid-template-columns:64px 1fr; gap:16px; padding-block:14px; border-bottom:1px solid var(--rule); font-size:.95rem}
+.pubs li .y{font-family:var(--mono); font-size:.8rem; color:var(--muted); padding-top:2px}
+.pubs li .status{font-family:var(--mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--heat-ink); margin-left:6px; white-space:nowrap}
+.pubs em{font-style:italic}
+.pubs .me{font-weight:600}
+
+/* toolkit */
+.kit{display:grid; grid-template-columns:repeat(4,1fr); gap:0; border-top:1px solid var(--ink)}
+.kit div{padding:18px 18px 18px 0}
+.kit div + div{padding-left:18px; border-left:1px solid var(--rule)}
+.kit h4{font-family:var(--mono); font-weight:500; font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--water); margin:0 0 10px}
+.kit p{font-size:.92rem}
+
+.cols{display:grid; grid-template-columns:1fr 1fr; gap:48px}
+.cols > *{min-width:0}
+.list{list-style:none; padding:0; margin:0}
+.list li{padding-block:10px; border-bottom:1px solid var(--rule); font-size:.94rem}
+.list li small{display:block; color:var(--muted); font-size:.82rem}
+h3.sub{font-size:1.15rem; margin-bottom:8px}
+
+/* contact */
+.contact{margin-top:72px; background:var(--ink); color:var(--paper); padding:44px 40px; display:grid; grid-template-columns:1.2fr 1fr; gap:32px; align-items:center}
+.contact h2{font-size:clamp(1.7rem,3vw,2.3rem)}
+.contact p{opacity:.8; margin-top:10px}
+.contact .addr{display:flex; gap:10px; align-items:center; flex-wrap:wrap; font-family:var(--mono); font-size:.95rem}
+.contact .addr code{user-select:all; background:rgba(255,255,255,.08); padding:8px 10px; border-radius:3px}
+.contact .btn{border-color:var(--paper); color:var(--paper)}
+.contact a{color:var(--heat)}
+footer{padding-block:28px 40px; display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; font-size:.82rem; color:var(--muted)}
+
+/* lightbox */
+dialog{border:0; padding:0; background:transparent; max-width:min(1200px,94vw); max-height:92vh}
+dialog::backdrop{background:rgba(8,16,20,.86)}
+dialog img{max-width:100%; max-height:84vh; display:block; margin:auto}
+dialog p{color:#e3ecea; font-size:.86rem; margin-top:10px; text-align:center}
+dialog button{position:absolute; top:6px; right:6px; background:#122830; color:#fff; border:0; width:36px; height:36px; border-radius:50%; font-size:1.2rem; cursor:pointer}
+
+img,video{-webkit-user-drag:none; user-select:none}
+
+@media (max-width:900px){
+  .hero,.theme-body,.cols,.contact{grid-template-columns:1fr}
+  .sechead,.theme{grid-template-columns:1fr; gap:12px}
+  .atlas{grid-template-columns:1fr 1fr}
+  .kit{grid-template-columns:1fr 1fr}
+  .kit div:nth-child(3){padding-left:0; border-left:0}
+  .kit div{border-top:1px solid var(--rule)}
+}
+@media (max-width:560px){
+  .hero{padding-block:36px}
+  .strip{grid-template-columns:1fr 1fr}
+  .strip div:nth-child(3){padding-left:0; border-left:0}
+  .atlas,.figs.two,.kit{grid-template-columns:1fr}
+  .figs.three{grid-template-columns:1fr}
+  .kit div{padding-left:0 !important; border-left:0 !important}
+  .pubs li{grid-template-columns:1fr; gap:2px}
+  .contact{padding:32px 20px}
+  nav.top ul{gap:12px}
+}
+</style>
+</head>
+<body>
+<nav class="top"><div class="wrap">
+  <a class="mark" href="#top">Huixuan Li</a>
+  <ul>
+    <li><a href="#research">Research</a></li>
+    <li><a href="#atlas">Map atlas</a></li>
+    <li><a href="#funding">Grants</a></li>
+    <li><a href="#publications">Publications</a></li>
+    <li><a href="#toolkit">Toolkit</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</div></nav>
+
+<div class="wrap" id="top">
+
+<header class="hero">
+  <div>
+    <p class="eyebrow">Geospatial data science · Remote sensing · Spatial epidemiology</p>
+    <h1 style="margin-top:14px">Huixuan Li, PhD<span>Research Assistant Professor, University of South Carolina</span></h1>
+    <p class="lede">I turn satellite archives, climate records and disease surveillance data into maps and models that show where environmental change puts people at risk. My work links drought, heat, land cover and hydrology to mosquito-borne disease, child health and urban crime, using machine learning and deep learning on Earth observation data.</p>
+    <div class="meta">
+      <div><b>Focus</b>Vector-borne disease · climate &amp; health</div>
+      <div><b>Methods</b>GeoAI · spatial statistics · GEE</div>
+      <div><b>Location</b>Seattle area · remote-ready</div>
+    </div>
+    <div class="cta">
+      <a class="btn primary" href="#research">See the work</a>
+      <a class="btn" href="https://scholar.google.com/citations?user=z1DVX74AAAAJ&amp;hl=en" target="_blank" rel="noopener">Google Scholar ↗</a>
+    </div>
+  </div>
+  <figure>
+    <div class="frame">
+      <span class="tick tl">CONUS · 2001–2023</span>
+      <video src="media/wnv-firefly.mp4" poster="media/wnv-firefly.jpg" autoplay muted loop playsinline controlslist="nodownload" disablepictureinpicture></video>
+      <span class="tick br">© Huixuan Li</span>
+    </div>
+    <figcaption>West Nile virus incidence per 100,000, 2001–2023, animated year by year as a "firefly" map. County-level surveillance aggregated from national case records.</figcaption>
+  </figure>
+</header>
+
+<div class="strip">
+  <div><strong>8+</strong><span>years in geospatial research</span></div>
+  <div><strong>40 yr</strong><span>dengue record modeled for Mexico</span></div>
+  <div><strong>33,946</strong><span>Culex surveillance records, SC 1996–2024</span></div>
+  <div><strong>$4.0M+</strong><span>in funded NIH, foundation and pilot awards</span></div>
+</div>
+
+<!-- RESEARCH -->
+<section id="research">
+  <div class="sechead">
+    <p class="eyebrow">01 · Research</p>
+    <div>
+      <h2>A geospatial–health pipeline</h2>
+      <p>One throughline connects the projects below: measure the environment from space, link it to ground observations, and model how the change drives risk. The study areas move from Gulf Coast cities to entire countries, but the pipeline stays the same.</p>
+    </div>
+  </div>
+
+  <article class="theme">
+    <aside><p class="eyebrow">Theme A</p><p class="loc">29.8°N 95.4°W<br>Houston / Harris County, TX</p><p class="loc">25.8°N 80.2°W<br>Miami-Dade County, FL</p><p class="loc">23.6°N 102.5°W<br>Mexico, 32 states</p></aside>
+    <div class="theme-body">
+      <div>
+        <h3>Mosquito-borne disease and climate</h3>
+        <p>On an NIH NIAID R01, I lead the geospatial and remote-sensing work on <em>Aedes</em> and <em>Culex</em> populations in Houston and Miami. I predict where these mosquitoes thrive by combining Landsat and Sentinel spectral indices, gridded climate (PRISM, GRIDMET), land cover and trap counts in Random Forest, XGBoost and GAM models.</p>
+        <p>In Mexico, a 40-year analysis showed that dengue outbreaks grow because the virus reaches new places, not because transmission intensifies where it already circulates. In South Carolina I am building an emerging hot-spot and GWR analysis of nearly 30 years of state <em>Culex</em> surveillance.</p>
+        <ul class="k"><li>Random Forest</li><li>XGBoost</li><li>Bayesian spatio-temporal</li><li>GAM</li><li>Emerging hot spots</li><li>Computer vision</li></ul>
+        <p class="pubref">Li et al. (2026). Geographic expansion, not viral intensification, leads to human dengue outbreaks in Mexico. <em>Frontiers in Public Health</em>.</p>
+        <p class="pubref">Li, H., et al. (2026). The prediction of <em>Aedes</em> mosquito abundance using remote sensing and machine learning in Harris County, Texas. <em>Scientific Reports</em>. <a href="https://doi.org/10.1038/s41598-026-64249-6" target="_blank" rel="noopener">Read ↗</a></p>
+      </div>
+      <div class="figs">
+        <div class="figs two">
+          <figure>
+            <div class="frame"><img class="zoom" src="media/aedes-harris.jpg" alt="Map of predicted Aedes mosquito abundance across Harris County, Texas, from low (blue) to high (red), over satellite imagery" loading="lazy"></div>
+            <figcaption>Houston: predicted <em>Aedes</em> abundance from an XGBoost model on Sentinel-2, weather and socioeconomic features (<em>Sci. Rep.</em> 2026).</figcaption>
+          </figure>
+          <figure>
+            <div class="frame"><img class="zoom" src="media/aedes-miami.jpg" alt="Map of Aedes trap counts across the Miami metropolitan area, shown as glowing graduated symbols" loading="lazy"></div>
+            <figcaption>Miami: <em>Aedes</em> trap counts across the metro study site.</figcaption>
+          </figure>
+        </div>
+        <figure>
+          <div class="frame"><video src="media/dengue-hex.mp4" poster="media/dengue-poster.jpg" autoplay muted loop playsinline controlslist="nodownload" disablepictureinpicture aria-label="Animated hexagon map of dengue incidence across Mexican states, year by year"></video></div>
+          <figcaption>Dengue incidence by state, Mexico, animated from 1985. Each hexagon is one state; values are cases per 100,000.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </article>
+
+  <article class="theme">
+    <aside><p class="eyebrow">Theme B</p><p class="loc">CONUS<br>3,100+ counties</p><p class="loc">2010–2020</p></aside>
+    <div class="theme-body">
+      <div>
+        <h3>Climate extremes and child health</h3>
+        <p>With Burroughs Wellcome Fund and NIH NICHD support, I built a county-level big-data pipeline that joins daily temperature, the Evaporative Demand Drought Index (EDDI) and poverty measures to early childhood outcomes across the contiguous U.S.</p>
+        <p>The maps show where drought and poverty together shape child well-being, and where the relationship is strongest.</p>
+        <ul class="k"><li>EDDI</li><li>Daily gridded climate</li><li>County panels</li><li>Spatial regression</li></ul>
+      </div>
+      <div class="figs">
+        <figure>
+          <div class="frame"><img class="zoom" src="media/drought-1.jpg" alt="County map of drought and poverty impact on child well-being across the U.S., 2010–2020" loading="lazy"></div>
+          <figcaption>Drought and poverty impact on child well-being, 2010–2020.</figcaption>
+        </figure>
+        <div class="figs two">
+          <figure><div class="frame"><img class="zoom" src="media/drought-2.jpg" alt="County temperature map of the U.S. on 1 January 2019" loading="lazy"></div><figcaption>Daily temperature, 2019-01-01.</figcaption></figure>
+          <figure><div class="frame"><img class="zoom" src="media/drought-3.jpg" alt="County EDDI drought index map of the U.S. on 1 January 2012" loading="lazy"></div><figcaption>EDDI drought index, 2012-01-01.</figcaption></figure>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class="theme">
+    <aside><p class="eyebrow">Theme C</p><p class="loc">U.S. counties<br>incl. Alaska</p><p class="loc">2010–2023</p></aside>
+    <div class="theme-body wide">
+      <div>
+        <h3>Space–time patterns of sexually transmitted infections</h3>
+        <p>I built county-level space–time cubes of chlamydia, gonorrhea, early syphilis and primary &amp; secondary syphilis rates for 2010–2023 and ran Emerging Hot Spot Analysis: Getis-Ord Gi* with FDR correction, followed by Mann-Kendall trend tests on each county's z-score series.</p>
+        <p>The maps separate entrenched burden from new spread. Chlamydia and gonorrhea form persistent and intensifying hot spots across the Gulf South and Carolinas. Early syphilis shows new and consecutive hot spots spreading into Texas and Oklahoma, the Dakotas, and a band through eastern Tennessee, western North Carolina and Kentucky. I paired the clusters with exploratory regressions on County Health Rankings measures of socioeconomics and clinical care.</p>
+        <ul class="k"><li>Space–time cube</li><li>Emerging hot spots</li><li>Getis-Ord Gi*</li><li>Mann-Kendall</li><li>FDR correction</li><li>OLS diagnostics</li></ul>
+      </div>
+      <div class="figs two">
+        <figure><div class="frame"><img class="zoom" src="media/ehsa-chlamydia.jpg" alt="Emerging hot spot map of chlamydia by U.S. county, 2010 to 2023" loading="lazy"></div><figcaption>Chlamydia</figcaption></figure>
+        <figure><div class="frame"><img class="zoom" src="media/ehsa-gonorrhea.jpg" alt="Emerging hot spot map of gonorrhea by U.S. county, 2010 to 2023" loading="lazy"></div><figcaption>Gonorrhea</figcaption></figure>
+        <figure><div class="frame"><img class="zoom" src="media/ehsa-syphilis-early.jpg" alt="Emerging hot spot map of early syphilis by U.S. county, 2010 to 2023" loading="lazy"></div><figcaption>Early syphilis</figcaption></figure>
+        <figure><div class="frame"><img class="zoom" src="media/ehsa-syphilis-ps.jpg" alt="Emerging hot spot map of primary and secondary syphilis by U.S. county, 2010 to 2023" loading="lazy"></div><figcaption>Primary &amp; secondary syphilis</figcaption></figure>
+      </div>
+    </div>
+  </article>
+
+  <article class="theme">
+    <aside><p class="eyebrow">Theme D</p><p class="loc">39.7°N 105.0°W<br>Denver, CO</p><p class="loc">6 U.S. cities<br>4 climate regions</p></aside>
+    <div class="theme-body">
+      <div>
+        <h3>Spatial criminology and the urban environment</h3>
+        <p>With collaborators in USC's Department of Criminology &amp; Criminal Justice, I apply the same spatial toolkit to crime and policing.</p>
+        <p>In a six-city study (Baltimore, Boston, Cincinnati, Washington DC, Atlanta and Seattle), I am first author on an analysis of whether tract-level urban heat island exposure predicts violent crime. It uses negative binomial models with population offsets, two independent heat measures (Climate Central and NOAA CAPA Heat Watch), and a random forest with SHAP.</p>
+        <p>In Denver, I tested whether hate crimes concentrate along neighborhood edges, using 100 m and 200 m census-tract boundary buffers and kernel density surfaces. I also contributed the spatial analysis to a study of field booking arrests and neighborhood disparities in policing.</p>
+        <ul class="k"><li>Negative binomial</li><li>Random forest + SHAP</li><li>Kernel density</li><li>Edge buffers</li><li>Urban heat island</li></ul>
+        <p class="pubref">Isom, D.A., Hubbard, K.E. &amp; Li, H. (2023). Injustice in the field? A look at field booking arrests in a Southeastern city. <em>International Journal on Responsibility</em> 6(1).</p>
+        <p class="pubref">Li, H., Boehme, H.M., et al. Urban heat island of violence? Urban heat islands and violent crime across six U.S. cities. Manuscript in preparation (first author).</p>
+      </div>
+      <div class="figs">
+        <figure>
+          <div class="frame"><img class="zoom" src="media/denver-buffer.jpg" alt="Map of crime incidents in Denver with those inside 200 meter census-tract edge buffers circled" loading="lazy"></div>
+          <figcaption>Denver incidents, with those inside 200 m tract-edge buffers circled.</figcaption>
+        </figure>
+        <div class="figs two">
+          <figure><div class="frame"><img class="zoom" src="media/denver-kde.jpg" alt="Kernel density heat map of crime incidents in Denver" loading="lazy"></div><figcaption>Kernel density surface of incidents.</figcaption></figure>
+          <figure><div class="frame"><img class="zoom" src="media/denver-zoom.jpg" alt="Close-up of central Denver street grid with crime incidents and buffer matches" loading="lazy"></div><figcaption>Central Denver close-up.</figcaption></figure>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class="theme">
+    <aside><p class="eyebrow">Theme E</p><p class="loc">33.3°N 79.2°W<br>North Inlet–Winyah Bay, SC</p><p class="loc">1990–2019</p></aside>
+    <div class="theme-body">
+      <div>
+        <h3>Deep learning for coastal wetlands</h3>
+        <p>My doctoral work mapped South Carolina's 340,000 acres of salt marsh with a U-Net trained on Sentinel-2 imagery, separating low marsh (<em>Spartina alterniflora</em>) from high marsh (<em>Juncus roemerianus</em>) statewide.</p>
+        <p>An autoencoder then reconstructed 20 years of Landsat NDVI trajectories to flag dieback pixels, (see the <a href="#atlas">year-by-year animation</a>), and Getis-Ord Gi* hot-spot analysis tied 30 years of dieback to drought anomalies, salinity and turbidity.</p>
+        <ul class="k"><li>U-Net</li><li>Autoencoder</li><li>Sentinel-2</li><li>Landsat time series</li><li>Getis-Ord Gi*</li></ul>
+        <p class="pubref">Li, Wang, Cui &amp; Hodgson (2021). Mapping salt marsh along coastal South Carolina using U-Net. <em>ISPRS J. Photogramm. Remote Sens.</em></p>
+        <p class="pubref">Li et al. (2020). Identifying marsh dieback events from Landsat image series with an Autoencoder. <em>Int. J. Digital Earth</em>.</p>
+      </div>
+      <div class="figs">
+        <figure>
+          <div class="frame"><img class="zoom" src="media/marsh-unet.jpg" alt="Statewide U-Net classification of South Carolina estuarine wetlands into low marsh, high marsh, forest, water and other, with zoomed insets" loading="lazy"></div>
+          <figcaption>Statewide U-Net classification of SC estuarine marsh, with insets against true-color imagery.</figcaption>
+        </figure>
+        <div class="figs two">
+          <figure><div class="frame"><img class="zoom" src="media/marsh-hotspot.jpg" alt="Hot spot and cold spot map of 30 years of marsh dieback in the North Inlet–Winyah Bay estuary" loading="lazy"></div><figcaption>Gi* hot spots of 30 years of dieback.</figcaption></figure>
+          <figure><div class="frame"><img class="zoom" src="media/marsh-clusters.jpg" alt="Density of the most severe marsh dieback events in 1991 and 2013 over satellite imagery" loading="lazy"></div><figcaption>Severe dieback clusters, 1991 vs. 2013.</figcaption></figure>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class="theme">
+    <aside><p class="eyebrow">Theme F</p><p class="loc">Current direction</p></aside>
+    <div class="theme-body">
+      <div>
+        <h3>Earth foundation models for surveillance</h3>
+        <p>I am adapting pretrained geospatial foundation models with LoRA fine-tuning and multi-task learning to detect and forecast invasive disease vectors from satellite and weather data. This work is the basis of a NASA Accelerating Earth Solutions proposal on which I am Co-PI.</p>
+        <ul class="k"><li>Geospatial foundation models</li><li>LoRA</li><li>Multi-task learning</li></ul>
+      </div>
+      <div>
+        <h3 class="sub">Lab-to-field tools</h3>
+        <p>I also co-developed <strong>AeEggCounter</strong>, a YOLO-based smartphone app that counts <em>Aedes</em> eggs on ovitrap linings for high-throughput surveillance. Trained on 4,398 annotated eggs, it reached 88.3% precision, 91.7% recall and an F1 score of 89.9% (<em>J. Am. Mosquito Control Assoc.</em> 42(3), 2026).</p>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- ATLAS -->
+<section id="atlas">
+  <div class="sechead">
+    <p class="eyebrow">02 · Map atlas</p>
+    <div><h2>Animated maps</h2><p>Time-series cartography built for presentations and public communication. All animations play muted and loop.</p></div>
+  </div>
+  <div class="atlas">
+    <figure>
+      <div class="frame"><video src="media/wnv-county.mp4" poster="media/wnv-county.jpg" autoplay muted loop playsinline controlslist="nodownload" disablepictureinpicture aria-label="Animated county choropleth of West Nile cases per 100,000 over 22 years"></video></div>
+      <figcaption>West Nile cases per 100,000 by county, 2001–2023. <span class="c">choropleth</span></figcaption>
+    </figure>
+    <figure>
+      <div class="frame"><video src="media/wnv-firefly.mp4" poster="media/wnv-firefly.jpg" autoplay muted loop playsinline controlslist="nodownload" disablepictureinpicture aria-label="Animated firefly-style map of West Nile incidence"></video></div>
+      <figcaption>The same record as a glowing point map, which reads well on a projector. <span class="c">firefly</span></figcaption>
+    </figure>
+    <figure>
+      <div class="frame"><video class="sq" src="media/dengue-hex.mp4" poster="media/dengue-poster.jpg" autoplay muted loop playsinline controlslist="nodownload" disablepictureinpicture aria-label="Animated hexagon tile map of dengue incidence in Mexico"></video></div>
+      <figcaption>Dengue incidence across Mexico's 32 states on an equal-area hex grid. <span class="c">hex tile map</span></figcaption>
+    </figure>
+    <figure>
+      <div class="frame"><video class="sq" src="media/marsh-dieback.mp4" poster="media/marsh-dieback.jpg" autoplay muted loop playsinline controlslist="nodownload" disablepictureinpicture aria-label="Animated map of salt marsh dieback pixels detected each year in the North Inlet–Winyah Bay estuary"></video></div>
+      <figcaption>Salt marsh dieback detected by the autoencoder in each Landsat scene, North Inlet–Winyah Bay, 1998–2018. <span class="c">time-series classification</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- FUNDING -->
+<section id="funding">
+  <div class="sechead">
+    <p class="eyebrow">03 · Grants</p>
+    <div><h2>Research funding</h2><p>I lead the geospatial and remote-sensing components of multi-investigator projects, and I write and manage my own awards. Funded projects I have worked on total more than <strong>$4.0 million</strong> in awards.</p></div>
+  </div>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Sponsor</th><th>Project</th><th>Role</th><th>Years</th><th class="amt">Total award</th></tr></thead>
+      <tbody>
+        <tr><td>NIH NIAID · R01 AI165560</td><td>Next-generation mosquito control through technology-driven trap development and AI-guided detection of mosquito breeding habitats; <em>Aedes</em> and <em>Culex</em> in Houston and Miami</td><td class="role">Co-I, geospatial lead</td><td class="yr">2021–2026</td><td class="amt">$3,280,171</td></tr>
+        <tr><td>NIH NICHD · R21 HD114012</td><td>Climate extremes and early childhood development</td><td class="role">Co-Investigator</td><td class="yr">2025–2027</td><td class="amt">$394,037</td></tr>
+        <tr><td>NASA ROSES-2025 · A.13 Accelerating Earth Solutions</td><td>Fine-tuning Earth foundation models for surveillance of invasive disease vectors</td><td class="role">Co-PI</td><td class="yr">Under review</td><td class="amt"><span class="req">~$1.2M requested</span></td></tr>
+        <tr><td>Burroughs Wellcome Fund · 1023081</td><td>Big-data methods to study three decades of extreme weather and early childhood development in the U.S.</td><td class="role">Co-I</td><td class="yr">2023</td><td class="amt">$50,000</td></tr>
+        <tr><td>Arnold School of Public Health, USC</td><td>Climate-change projections of dengue risk in Mexico</td><td class="role">PI</td><td class="yr">Pilot</td><td class="amt">$5,000</td></tr>
+        <tr><td>ExxonMobil Foundation</td><td>Geospatial analysis of high-risk areas for vector-borne transmission using satellite imaging</td><td class="role">Key personnel</td><td class="yr">2017–2021</td><td class="amt">$300,000</td></tr>
+        <tr><td>NASA · SMAPVEX15</td><td>Soil Moisture Active Passive post-launch validation field campaign, Arizona</td><td class="role">Field team</td><td class="yr">2015</td><td class="amt">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- PUBLICATIONS -->
+<section id="publications">
+  <div class="sechead">
+    <p class="eyebrow">04 · Publications</p>
+    <div><h2>Selected publications</h2><p>Full list on <a href="https://scholar.google.com/citations?user=z1DVX74AAAAJ&amp;hl=en" target="_blank" rel="noopener">Google Scholar</a>.</p></div>
+  </div>
+  <ol class="pubs">
+    <li><span class="y">2026</span><span><span class="me">Li, H.</span>, Lee, C., Sweeney, S., Valafar, H. &amp; Nolan, M.S. Geographic expansion, not viral intensification, leads to human dengue outbreaks in Mexico: a 40-year integrated remote sensing and machine learning analysis. <em>Frontiers in Public Health</em>.<span class="status">Accepted</span></span></li>
+    <li><span class="y">2026</span><span>Costa-Da-Silva, A.L., Zhou, J., Frederiksen, A., Palacios, R.C., Ramirez Fernandez, C., Gonzalez, M., Pravia, D., Miao, L., Dye-Braumuller, K., Fridriksson, S.E., Frick, E., <span class="me">Li, H.</span>, Gunter, S.M., DeGennaro, M. &amp; Nolan, M.S. AeEggCounter: a computer vision tool for high-throughput screening of <em>Aedes</em> eggs from ovitrap field samples. <em>Journal of the American Mosquito Control Association</em> 42(3), 189–205.</span></li>
+    <li><span class="y">2026</span><span><span class="me">Li, H.</span>, Zhou, J., Dye-Braumuller, K., Vigilant, M., DeGennaro, M., Sekou, M.H., Oluyomi, A.O., Nolan, M.S. &amp; Gunter, S.M. The prediction of <em>Aedes</em> mosquito abundance using remote sensing and machine learning in Harris County, Texas. <em>Scientific Reports</em>. <a href="https://doi.org/10.1038/s41598-026-64249-6" target="_blank" rel="noopener">doi:10.1038/s41598-026-64249-6 ↗</a><span class="status">Open access</span></span></li>
+    <li><span class="y">2026</span><span>Hamilton, B., <span class="me">Li, H.</span>, Corbett, C., Raynor, P. &amp; Dawson, R. School nursing’s impact on student outcomes: a path forward for historically segregated communities — a transcultural GIS approach. <em>Journal of Transcultural Nursing</em> 37(2), 349–360.</span></li>
+    <li><span class="y">—</span><span><span class="me">Li, H.</span>, Boehme, H.M., Liu, H., Lee, C., Hardin, J. &amp; Nolan, M.S. Urban heat island of violence? Exploring the relationship between urban heat islands and violent crime across six U.S. cities with diverse climates.<span class="status">In preparation</span></span></li>
+    <li><span class="y">2025</span><span>McCarter, M., Self, S.C., <span class="me">Li, H.</span>, et al. Validating a Bayesian spatio-temporal model to predict La Crosse virus human incidence in the Appalachian region, USA. <em>Microorganisms</em> 13(4), 812.</span></li>
+    <li><span class="y">2024</span><span>Shi, Z., et al., <span class="me">Li, H.</span> Automatic identification of cirques based on RetinaNet and pseudo-color image fusion. <em>Advances in Space Research</em> 74(7).</span></li>
+    <li><span class="y">2023</span><span>Isom, D.A., Hubbard, K.E. &amp; <span class="me">Li, H.</span> Injustice in the field? A look at field booking arrests in a Southeastern city. <em>International Journal on Responsibility</em> 6(1), Article 4. <a href="https://commons.lib.jmu.edu/ijr/vol6/iss1/4/" target="_blank" rel="noopener">Link ↗</a></span></li>
+    <li><span class="y">2022</span><span><span class="me">Li, H.</span>, Wang, C., Yu, Q. &amp; Smith, E. Spatiotemporal assessment of potential drivers of salt marsh dieback in the North Inlet–Winyah Bay estuary, SC (1990–2019). <em>J. Environmental Management</em> 313, 114907.</span></li>
+    <li><span class="y">2021</span><span><span class="me">Li, H.</span>, Wang, C., Cui, Y. &amp; Hodgson, M. Mapping salt marsh along coastal South Carolina using U-Net. <em>ISPRS J. Photogrammetry and Remote Sensing</em> 179, 121–132.</span></li>
+    <li><span class="y">2020</span><span><span class="me">Li, H.</span>, Wang, C., Ellis, J.T., Cui, Y., Miller, G. &amp; Morris, J.T. Identifying marsh dieback events from Landsat image series (1998–2018) with an Autoencoder. <em>Int. J. Digital Earth</em> 13(12).</span></li>
+    <li><span class="y">2018</span><span><span class="me">Li, H.</span>, Wang, C., Huang, X. &amp; Hug, A. Spatial assessment of water quality with urbanization in 2007–2015, Shanghai, China. <em>Remote Sensing</em> 10(7), 1024.</span></li>
+    <li><span class="y">2016</span><span>Lakshmi, V. &amp; <span class="me">Li, H.</span> Spatial downscaling of SMAP passive microwave soil moisture using vegetation index and surface temperature. <em>IEEE IGARSS</em>.</span></li>
+  </ol>
+</section>
+
+<!-- TOOLKIT -->
+<section id="toolkit">
+  <div class="sechead">
+    <p class="eyebrow">05 · Toolkit</p>
+    <div><h2>What I work with</h2></div>
+  </div>
+  <div class="kit">
+    <div><h4>GIS</h4><p>ArcGIS Pro and ArcGIS Online; ArcPy; cartographic design and animated maps</p></div>
+    <div><h4>Remote sensing</h4><p>Google Earth Engine, ENVI, ERDAS IMAGINE, SNAP; Landsat, Sentinel-2, MODIS, SMAP; spectral indices and time-series analysis</p></div>
+    <div><h4>GeoAI &amp; ML</h4><p>PyTorch, TensorFlow; U-Net, autoencoders, Random Forest, XGBoost; foundation-model fine-tuning (LoRA)</p></div>
+    <div><h4>Spatial statistics</h4><p>Python and R; GAMs, GWR, Bayesian spatio-temporal models, hot-spot and Mann-Kendall trend analysis</p></div>
+  </div>
+</section>
+
+<!-- TEACHING / SERVICE -->
+<section id="teaching">
+  <div class="cols">
+    <div>
+      <p class="eyebrow">06 · Teaching &amp; mentoring</p>
+      <h2 style="font-size:1.8rem;margin:10px 0 18px">Teaching &amp; mentoring</h2>
+      <ul class="list">
+        <li>PhD committee member and technical mentor<small>Bridget Hamilton (now postdoc, Emory; co-authored <em>J. Transcultural Nursing</em> 2026), Nyame Murtala; GIS and modeling support for Maggie McCarter (now Principal Biostatistician, Jazz Pharmaceuticals; co-authored <em>Microorganisms</em> 2025) and Sean Sweeney (co-authored <em>Frontiers in Public Health</em> 2026)</small></li>
+        <li>Introduction to GIS (GEOG 363) · instructor<small>University of South Carolina, 2019</small></li>
+        <li>The Digital Earth (GEOG 105) · instructor<small>University of South Carolina, 2017–2019</small></li>
+        <li>Principles of Remote Sensing; Aerial Photo Interpretation; Landform Geography · TA<small>University of South Carolina, 2015–2017</small></li>
+        <li>GIS; Quantitative Methods &amp; Spatial Analysis · TA, rated 4.8/5<small>Auburn University, 2013–2015</small></li>
+      </ul>
+    </div>
+    <div>
+      <p class="eyebrow">07 · Education, honors &amp; service</p>
+      <h2 style="font-size:1.8rem;margin:10px 0 18px">Background</h2>
+      <ul class="list">
+        <li>PhD, Geography<small>University of South Carolina, 2021</small></li>
+        <li>MS, Geosciences<small>Auburn University, 2015</small></li>
+        <li>Grace and Allan Davis Scholarship (2021) · F. John Vernberg Bicentennial Fellowship in Marine Science (2018) · Teaching Award (2016) · David W. Icenogle Student Award (2014)</li>
+        <li>Reviewer for <em>Remote Sensing</em>, <em>Sustainability</em>, <em>Water</em>, <em>Applied Geography</em><small>Member of AAG (2013–) and ASTMH (2022–); President, Geography Graduate Students Association, 2016–2017</small></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="contact" id="contact">
+  <div>
+    <h2>Let's work together</h2>
+    <p>Open to research, GIS and geospatial data science roles in the Seattle area or remote, and to new collaborations on climate, environment and health.</p>
+  </div>
+  <div>
+    <div class="addr"><code id="email">huixuan@email.sc.edu</code><button class="btn" id="copy" type="button">Copy</button></div>
+    <p style="margin-top:14px"><a href="https://scholar.google.com/citations?user=z1DVX74AAAAJ&amp;hl=en" target="_blank" rel="noopener">Google Scholar ↗</a></p>
+  </div>
+</div>
+
+<footer>
+  <span>© 2026 Huixuan Li. All maps, figures and animations on this site are original work by Huixuan Li. Do not reproduce without written permission.</span>
+  <span class="mono">Last updated Oct 2026</span>
+</footer>
+</div>
+
+<dialog id="lb"><button type="button" id="lbx" aria-label="Close">×</button><img id="lbimg" alt=""><p id="lbcap"></p></dialog>
+
+<script>
+(function(){
+  // light deterrents against saving figures
+  document.addEventListener('contextmenu',function(e){ if(e.target.closest('img,video')) e.preventDefault(); });
+  document.querySelectorAll('img').forEach(function(i){ i.draggable=false; });
+  var lb=document.getElementById('lb'), im=document.getElementById('lbimg'), cap=document.getElementById('lbcap');
+  document.querySelectorAll('img.zoom').forEach(function(i){
+    i.addEventListener('click',function(){
+      im.src=i.src; im.alt=i.alt;
+      var fc=i.closest('figure').querySelector('figcaption');
+      cap.textContent=(fc?fc.textContent+' ':'')+'© Huixuan Li';
+      if(lb.showModal) lb.showModal();
+    });
+  });
+  document.getElementById('lbx').onclick=function(){ lb.close(); };
+  lb.addEventListener('click',function(e){ if(e.target===lb) lb.close(); });
+  var btn=document.getElementById('copy');
+  btn.addEventListener('click',function(){
+    var t=document.getElementById('email').textContent;
+    var done=function(){ btn.textContent='Copied'; setTimeout(function(){btn.textContent='Copy';},1600); };
+    try{ navigator.clipboard.writeText(t).then(done,function(){ sel(); }); }catch(e){ sel(); }
+    function sel(){ var r=document.createRange(); r.selectNodeContents(document.getElementById('email')); var s=getSelection(); s.removeAllRanges(); s.addRange(r); }
+  });
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    document.querySelectorAll('video').forEach(function(v){ v.removeAttribute('autoplay'); v.pause(); v.controls=true; });
+  }
+})();
+</script>
+</body>
+</html>
